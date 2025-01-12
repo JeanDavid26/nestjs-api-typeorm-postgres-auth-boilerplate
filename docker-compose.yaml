@@ -1,0 +1,28 @@
+version: '1'
+
+services:
+  postgres:
+    image: postgres:14
+    container_name: db_container
+    env_file:
+      - .env
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build:
+      dockerfile: dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    volumes:
+      - uploads:/app/uploads
+
+volumes:
+  pgdata:
+  uploads:
