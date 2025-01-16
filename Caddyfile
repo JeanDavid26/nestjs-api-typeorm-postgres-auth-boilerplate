@@ -1,0 +1,5 @@
+# Caddyfile
+
+api.example.com {
+    reverse_proxy api:3000
+}

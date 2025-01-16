@@ -1,8 +1,9 @@
 version: '1'
 
 services:
+  
   postgres:
-    image: postgres:14
+    image: postgres:16
     container_name: db_container
     env_file:
       - .env
@@ -23,6 +24,23 @@ services:
     volumes:
       - uploads:/app/uploads
 
+  caddy:
+    image: caddy:latest
+    container_name: caddy_container
+    # On monte la config Caddyfile dans /etc/caddy/Caddyfile
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      # Pour que Caddy puisse stocker ses certificats et autres données
+      - caddy_data:/data
+      - caddy_config:/config
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - api
+
 volumes:
   pgdata:
   uploads:
+  caddy_data:
+  caddy_config:
