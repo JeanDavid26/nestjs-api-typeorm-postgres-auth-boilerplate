@@ -1,0 +1,37 @@
+version: '1'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: db_container_dev
+    env_file:
+      - .env
+    ports:
+      - "5434:5432"
+    volumes:
+      - pgdata_dev:/var/lib/postgresql/data
+
+  api:
+    build:
+      dockerfile: dockerfile
+      context: .
+    container_name: api_dev
+
+    # Monte tout ton dossier local dans /usr/src/app (le même WORKDIR que dans le Dockerfile)
+    volumes:
+      - .:/usr/src/app
+
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+
+    # Au lieu de lancer "start:prod", on garde le conteneur en attente
+    # On peut utiliser /bin/sh ou /bin/bash selon ce qui est installé dans node:alpine
+    command: [ "/bin/sh", "-c", "tail -f /dev/null" ]
+    # ou simplement: command: [ "tail", "-f", "/dev/null" ]
+
+volumes:
+  pgdata_dev:
